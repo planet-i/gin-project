@@ -1,5 +1,6 @@
 package e
 
+// 错误对应的错误信息
 var MsgFlags = map[int]string{
 	SUCCESS:                        "ok",
 	ERROR:                          "fail",
@@ -13,6 +14,7 @@ var MsgFlags = map[int]string{
 	ERROR_AUTH:                     "Token错误",
 }
 
+// 根据错误码获取错误信息
 func GetMsg(code int) string {
 	msg, ok := MsgFlags[code]
 	if ok {

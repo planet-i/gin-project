@@ -1,3 +1,4 @@
+// 此模块用来加载配置
 package setting
 
 import (
@@ -7,27 +8,28 @@ import (
 	"github.com/go-ini/ini"
 )
 
-// 此模块用来加载配置
+// 1.定义对应变量
 var (
 	Cfg *ini.File
 
 	RunMode string
 
+	PageSize  int
+	JwtSecret string
+
 	HTTPPort     int
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
-
-	PageSize  int
-	JwtSecret string
 )
 
 func init() {
 	var err error
+	// 2.加载配置文件
 	Cfg, err = ini.Load("conf/app.ini")
 	if err != nil {
 		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
 	}
-
+	// 3. 将配置文件中的对应数据赋值到变量中
 	LoadBase()
 	LoadServer()
 	LoadApp()
