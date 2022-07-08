@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/planet-i/gin-project/pkg/setting"
 	"github.com/planet-i/gin-project/routers"
 )
