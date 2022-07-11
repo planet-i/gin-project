@@ -1,14 +1,13 @@
 package api
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/planet-i/gin-project/models"
 	"github.com/planet-i/gin-project/pkg/e"
+	"github.com/planet-i/gin-project/pkg/logging"
 	"github.com/planet-i/gin-project/pkg/util"
 )
 
@@ -44,10 +43,9 @@ func GetAuth(c *gin.Context) {
 
 	} else {
 		for _, err := range valid.Errors {
-			log.Println(err.Key, err.Message)
+			logging.Info(err.Key, err.Message)
 		}
 	}
-	fmt.Println(e.GetMsg(code))
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  e.GetMsg(code),
