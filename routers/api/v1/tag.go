@@ -12,7 +12,7 @@ import (
 	"github.com/unknwon/com"
 )
 
-// 获取多个文章标签
+// GetTags 获取多个文章标签
 func GetTags(c *gin.Context) { // *gin.Context允许我们在中间件之间传递变量、管理流、验证请求的 JSON 和呈现 JSON 响应
 	// c.Query可用于获取?name=test&state=1这类 URL 参数
 	name := c.Query("name")
@@ -39,7 +39,7 @@ func GetTags(c *gin.Context) { // *gin.Context允许我们在中间件之间传�
 	})
 }
 
-// 新增文章标签
+// AddTag 新增文章标签
 func AddTag(c *gin.Context) {
 	name := c.Query("name")
 	state := com.StrTo(c.DefaultQuery("state", "0")).MustInt()
@@ -69,7 +69,7 @@ func AddTag(c *gin.Context) {
 	})
 }
 
-// 修改文章标签
+// EditTag 修改文章标签
 func EditTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
 	name := c.Query("name")
@@ -112,7 +112,7 @@ func EditTag(c *gin.Context) {
 	})
 }
 
-// 删除文章标签
+// DeleteTag 删除文章标签
 func DeleteTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
 	valid := validation.Validation{}

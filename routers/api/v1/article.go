@@ -13,7 +13,7 @@ import (
 	"github.com/unknwon/com"
 )
 
-// 获取单个文章
+// GetAritcle 获取单个文章
 func GetAritcle(c *gin.Context) {
 	var data interface{}
 	valid := validation.Validation{}
@@ -41,7 +41,7 @@ func GetAritcle(c *gin.Context) {
 	})
 }
 
-// 获取多个文章
+// GetAritcles 获取多个文章
 func GetAritcles(c *gin.Context) {
 	data := make(map[string]interface{})
 	maps := make(map[string]interface{})
@@ -78,7 +78,7 @@ func GetAritcles(c *gin.Context) {
 	})
 }
 
-// 新增文章
+// AddrArticle 新增文章
 func AddrArticle(c *gin.Context) {
 	tagId := com.StrTo(c.Query("tag_id")).MustInt()
 	title := c.Query("title")
@@ -124,7 +124,7 @@ func AddrArticle(c *gin.Context) {
 	})
 }
 
-// 修改文章
+// EditArticle 修改文章
 func EditArticle(c *gin.Context) {
 	valid := validation.Validation{}
 	id := com.StrTo(c.Param("id")).MustInt()
@@ -189,7 +189,7 @@ func EditArticle(c *gin.Context) {
 
 }
 
-// 删除文章
+// DeleteArticle 删除文章
 func DeleteArticle(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
 	valid := validation.Validation{}

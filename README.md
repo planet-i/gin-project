@@ -1,11 +1,19 @@
+## 目录结构
+```shell
 D:.
-├─conf          // 用于存储配置文件
-├─controller        
-├─dao
-├─middleware    // 应用中间件
-├─models        // 应用数据库模型
-├─pkg           // 第三方包
-├─routers       // 路由逻辑处理
-├─runtime       // 应用运行时数据
-├─static
-└─templates
+├─config          // 项目配置
+├─middleware      // 中间件
+│  └─jwt
+├─models          // 数据模型层
+├─pkg             // 公共工具库
+│  ├─e
+│  ├─logging
+│  ├─setting
+│  └─util
+├─routers         // 路由逻辑处理
+│  └─api
+│      ├─v1
+│      └─v2
+└─runtime         // 应用运行时数据
+    └─logs
+```

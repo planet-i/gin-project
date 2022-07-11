@@ -1,4 +1,4 @@
-// 此模块用来加载配置
+// 加载配置赋值给变量
 package setting
 
 import (
@@ -25,7 +25,7 @@ var (
 func init() {
 	var err error
 	// 2.加载配置文件
-	Cfg, err = ini.Load("conf/app.ini")
+	Cfg, err = ini.Load("config/config.ini")
 	if err != nil {
 		logging.Fatal("Fail to parse 'conf/app.ini': %v", err)
 	}
