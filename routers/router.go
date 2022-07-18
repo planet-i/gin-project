@@ -1,10 +1,13 @@
 package routers
 
 import (
+	"net/http"
+
 	_ "github.com/EDDYCJY/go-gin-example/docs"
 	"github.com/gin-gonic/gin"
 	"github.com/planet-i/gin-project/middleware/jwt"
 	"github.com/planet-i/gin-project/pkg/setting"
+	"github.com/planet-i/gin-project/pkg/upload"
 	"github.com/planet-i/gin-project/routers/api"
 	v1 "github.com/planet-i/gin-project/routers/api/v1"
 	swaggerFiles "github.com/swaggo/files"
@@ -13,13 +16,17 @@ import (
 
 // InitRouter initialize routing information
 func InitRouter() *gin.Engine {
+	gin.SetMode(setting.ServerSetting.RunMode)
+
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	gin.SetMode(setting.ServerSetting.RunMode)
 
+	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.POST("/upload", api.UploadImage)
 	r.GET("/auth", api.GetAuth)
+
 	apiv1 := r.Group("/api/v1")
 	apiv1.Use(jwt.JWT())
 	{
