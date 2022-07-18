@@ -2,60 +2,75 @@
 package setting
 
 import (
+	"log"
 	"time"
 
 	"github.com/go-ini/ini"
-	"github.com/planet-i/gin-project/pkg/logging"
 )
 
-// 1.定义对应变量
-var (
-	Cfg *ini.File
+// 1.编写与配置项保持一致的结构体
+type App struct {
+	JwtSecret       string
+	PageSize        int
+	RuntimeRootPath string
 
-	RunMode string
+	ImagePrefixUrl string
+	ImageSavePath  string
+	ImageMaxSize   int
+	ImageAllowExts []string
 
-	PageSize  int
-	JwtSecret string
+	LogSavePath string
+	LogSaveName string
+	LogFileExt  string
+	TimeFormat  string
+}
 
-	HTTPPort     int
+var AppSetting = &App{}
+
+type Server struct {
+	RunMode      string
+	HttpPort     int
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
-)
+}
 
-func init() {
+var ServerSetting = &Server{}
+
+type Database struct {
+	Type        string
+	User        string
+	Password    string
+	Host        string
+	Name        string
+	TablePrefix string
+}
+
+var DatabaseSetting = &Database{}
+
+func Setup() {
 	var err error
 	// 2.加载配置文件
-	Cfg, err = ini.Load("config/config.ini")
+	Cfg, err := ini.Load("config/config.ini")
 	if err != nil {
-		logging.Fatal("Fail to parse 'conf/app.ini': %v", err)
+		log.Fatal("Fail to parse 'config/config.ini': %v", err)
 	}
-	// 3. 将配置文件中的对应数据赋值到变量中
-	LoadBase()
-	LoadServer()
-	LoadApp()
-}
-
-func LoadBase() {
-	RunMode = Cfg.Section("").Key("RUN_MODE").MustString("debug")
-}
-
-func LoadServer() {
-	sec, err := Cfg.GetSection("server")
+	// 3.使用 MapTo 将配置项映射到结构体上
+	err = Cfg.Section("app").MapTo(AppSetting)
 	if err != nil {
-		logging.Fatal("Fail to get section 'server': %v", err)
+		log.Fatalf("Cfg.MapTo AppSetting err: %v", err)
 	}
+	// 4.对一些需特殊设置的配置项进行再赋值
+	AppSetting.ImageMaxSize = AppSetting.ImageMaxSize * 1024 * 1024
 
-	HTTPPort = sec.Key("HTTP_PORT").MustInt(8000)
-	ReadTimeout = time.Duration(sec.Key("READ_TIMEOUT").MustInt(60)) * time.Second
-	WriteTimeout = time.Duration(sec.Key("WRITE_TIMEOUT").MustInt(60)) * time.Second
-}
-
-func LoadApp() {
-	sec, err := Cfg.GetSection("app")
+	err = Cfg.Section("server").MapTo(ServerSetting)
 	if err != nil {
-		logging.Fatal("Fail to get section 'app': %v", err)
+		log.Fatalf("Cfg.MapTo ServerSetting err: %v", err)
 	}
+	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
+	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
 
-	JwtSecret = sec.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
-	PageSize = sec.Key("PAGE_SIZE").MustInt(10)
+	err = Cfg.Section("database").MapTo(DatabaseSetting)
+	if err != nil {
+		log.Fatalf("Cfg.MapTo DatabaseSetting err: %v", err)
+	}
 }

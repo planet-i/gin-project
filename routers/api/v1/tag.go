@@ -35,7 +35,7 @@ func GetTags(c *gin.Context) { // *gin.Context允许我们在中间件之间传�
 
 	code := e.SUCCESS
 
-	data["lists"] = models.GetTags(util.GetPage(c), setting.PageSize, maps)
+	data["lists"] = models.GetTags(util.GetPage(c), setting.AppSetting.PageSize, maps)
 	data["total"] = models.GetTagTotal(maps)
 
 	c.JSON(http.StatusOK, gin.H{
