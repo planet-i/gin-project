@@ -5,11 +5,11 @@ import (
 
 	_ "github.com/EDDYCJY/go-gin-example/docs"
 	"github.com/gin-gonic/gin"
+	"github.com/planet-i/gin-project/api"
+	v1 "github.com/planet-i/gin-project/api/v1"
 	"github.com/planet-i/gin-project/middleware/jwt"
 	"github.com/planet-i/gin-project/pkg/setting"
 	"github.com/planet-i/gin-project/pkg/upload"
-	"github.com/planet-i/gin-project/routers/api"
-	v1 "github.com/planet-i/gin-project/routers/api/v1"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -42,7 +42,7 @@ func InitRouter() *gin.Engine {
 		// 获取指定文章
 		apiv1.GET("/articles/:id", v1.AddrArticle)
 		// 获取文章列表
-		apiv1.GET("/articles", v1.GetAritcles)
+		apiv1.GET("/articles", v1.GetArticles)
 		// 添加文章
 		apiv1.POST("/articles", v1.AddrArticle)
 		// 修改指定文章

@@ -13,13 +13,13 @@ import (
 	"github.com/unknwon/com"
 )
 
-// GetAritcle      godoc
+// GetArticle      godoc
 // @Summary        获取指定文章
 // @Produce        json
 // @Param          id path int true "ID"
 // @Success        200 {string} json "{"code":200,"data":{},"msg":"ok"}"
 // @Router         /api/v1/articles/{id} [get]
-func GetAritcle(c *gin.Context) {
+func GetArticle(c *gin.Context) {
 	var data interface{}
 	valid := validation.Validation{}
 
@@ -28,7 +28,7 @@ func GetAritcle(c *gin.Context) {
 	code := e.INVALID_PARAMS
 	if !valid.HasErrors() {
 		if models.ExistArticleByID(id) {
-			data = models.GetAritcle(id)
+			data = models.GetArticle(id)
 			code = e.SUCCESS
 		} else {
 			code = e.ERROR_NOT_EXIST_ARTICLE
@@ -46,13 +46,13 @@ func GetAritcle(c *gin.Context) {
 	})
 }
 
-// GetAritcles     godoc
+// GetArticles     godoc
 // @Summary        获取文章列表
 // @Produce        json
 // @Param          state query int false "State"
 // @Success        200 {string} json "{"code":200,"data":{},"msg":"ok"}"
 // @Router         /api/v1/articles [get]
-func GetAritcles(c *gin.Context) {
+func GetArticles(c *gin.Context) {
 	data := make(map[string]interface{})
 	maps := make(map[string]interface{})
 	valid := validation.Validation{}
@@ -74,7 +74,7 @@ func GetAritcles(c *gin.Context) {
 	code := e.INVALID_PARAMS
 	if !valid.HasErrors() {
 		code = e.SUCCESS
-		data["lists"] = models.GetAritcles(util.GetPage(c), setting.AppSetting.PageSize, maps)
+		data["lists"] = models.GetArticles(util.GetPage(c), setting.AppSetting.PageSize, maps)
 		data["total"] = models.GetArticleTotal(maps)
 	} else {
 		for _, err := range valid.Errors {
