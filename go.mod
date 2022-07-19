@@ -14,6 +14,7 @@ require (
 	github.com/go-playground/validator/v10 v10.11.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/goccy/go-json v0.9.8 // indirect
+	github.com/gomodule/redigo v2.0.1-0.20180401191855-9352ab68be13+incompatible // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.2 // indirect
