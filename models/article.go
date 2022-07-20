@@ -1,5 +1,7 @@
 package models
 
+import "gorm.io/gorm"
+
 type Article struct {
 	Model
 
@@ -40,18 +42,14 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) (Articles []Articl
 	return
 }
 
-func GetArticle(id int) (article Article) {
-	// var article Article
-	// // 通过Related关联查询
-	// err := db.Where("id = ? AND delete_on = ?", id, 0).First(&article).Related(&article.Tag).Error
-	// if err != nil && err != gorm.ErrRecordNotFound {
-	// 	return nil, err
-	// }
-	// return &article, nil
-	db.Where("id = ?", id).First(&article)
-	db.Model(&article).Related(&article.Tag) // 通过Related关联查询
-
-	return
+func GetArticle(id int) (*Article, error) {
+	var article Article
+	// 通过Related关联查询
+	err := db.Where("id = ? AND delete_on = ?", id, 0).First(&article).Related(&article.Tag).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	return &article, nil
 }
 
 func EditArticle(id int, data interface{}) bool {

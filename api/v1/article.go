@@ -28,7 +28,7 @@ func GetArticle(c *gin.Context) {
 	code := e.INVALID_PARAMS
 	if !valid.HasErrors() {
 		if models.ExistArticleByID(id) {
-			data = models.GetArticle(id)
+			data, _ = models.GetArticle(id)
 			code = e.SUCCESS
 		} else {
 			code = e.ERROR_NOT_EXIST_ARTICLE

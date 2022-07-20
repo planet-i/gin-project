@@ -16,15 +16,7 @@ import (
 
 // 获取图片完整访问URL
 func GetImageFullUrl(name string) string {
-	return setting.AppSetting.ImagePrefixUrl + "/" + GetImagePath() + name
-}
-
-// 获取图片名称
-func GetImageName(name string) string {
-	ext := path.Ext(name)
-	fileName := strings.TrimSuffix(name, ext)
-	fileName = util.EncodeMD5(fileName)
-	return fileName + ext
+	return setting.AppSetting.PrefixUrl + "/" + GetImagePath() + name
 }
 
 // 获取图片路径
@@ -35,6 +27,14 @@ func GetImagePath() string {
 // 获取图片完整路径
 func GetImageFullPath() string {
 	return setting.AppSetting.RuntimeRootPath + GetImagePath()
+}
+
+// 获取图片名称
+func GetImageName(name string) string {
+	ext := path.Ext(name)
+	fileName := strings.TrimSuffix(name, ext)
+	fileName = util.EncodeMD5(fileName)
+	return fileName + ext
 }
 
 // 检查图片后缀
