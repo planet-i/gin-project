@@ -3,11 +3,12 @@ package routers
 import (
 	"net/http"
 
-	_ "github.com/EDDYCJY/go-gin-example/docs"
 	"github.com/gin-gonic/gin"
 	"github.com/planet-i/gin-project/api"
 	v1 "github.com/planet-i/gin-project/api/v1"
+	_ "github.com/planet-i/gin-project/docs"
 	"github.com/planet-i/gin-project/middleware/jwt"
+	"github.com/planet-i/gin-project/pkg/qrcode"
 	"github.com/planet-i/gin-project/pkg/setting"
 	"github.com/planet-i/gin-project/pkg/upload"
 	swaggerFiles "github.com/swaggo/files"
@@ -28,6 +29,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/auth", api.GetAuth)
 
 	apiv1 := r.Group("/api/v1")
+	r.StaticFS("/qrcode", http.Dir(qrcode.GetQrCodeFullPath()))
 	apiv1.Use(jwt.JWT())
 	{
 		// 获取标签列表
@@ -38,7 +40,7 @@ func InitRouter() *gin.Engine {
 		apiv1.PUT("/tags/:id", v1.EditTag)
 		// 删除指定标签
 		apiv1.DELETE("/tags/:id", v1.DeleteTag)
-		//导出标签
+		// 标签导出到Excel文件
 		apiv1.POST("/tags/export", v1.ExportTag)
 
 		// 获取指定文章
@@ -51,6 +53,8 @@ func InitRouter() *gin.Engine {
 		apiv1.PUT("/articles/:id", v1.EditArticle)
 		// 删除指定文章
 		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
+		// 生成二维码
+		apiv1.POST("/articles/poster/generate", v1.GenerateArticlePoster)
 	}
 
 	return r

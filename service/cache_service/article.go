@@ -1,12 +1,10 @@
 package cache_service
 
 import (
-	"encoding/json"
+	"strconv"
+	"strings"
 
-	"github.com/EDDYCJY/go-gin-example/service/cache_service"
-	"github.com/planet-i/gin-project/models"
-	"github.com/planet-i/gin-project/pkg/gredis"
-	"github.com/planet-i/gin-project/pkg/logging"
+	"github.com/planet-i/gin-project/pkg/e"
 )
 
 type Article struct {
@@ -18,26 +16,31 @@ type Article struct {
 	PageSize int
 }
 
-func (a *Article) Get() (*models.Article, error) {
-	var cacheArticle *models.Article
+func (a *Article) GetArticleKey() string {
+	return e.CACHE_ARTICLE + "_" + strconv.Itoa(a.ID)
+}
 
-	cache := cache_service.Article{ID: a.ID}
-	key := cache.GetArticleKey()
-
-	if gredis.Exists(key) {
-		data, err := gredis.Get(key)
-		if err != nil {
-			logging.Info(err)
-		} else {
-			json.Unmarshal(data, &cacheArticle)
-			return cacheArticle, nil
-		}
+func (a *Article) GetArticlesKey() string {
+	keys := []string{
+		e.CACHE_ARTICLE,
+		"LIST",
 	}
 
-	article, err := models.GetArticle(a.ID)
-	if err != nil {
-		return nil, err
+	if a.ID > 0 {
+		keys = append(keys, strconv.Itoa(a.ID))
 	}
-	gredis.Set(key, article, 3600)
-	return article, nil
+	if a.TagID > 0 {
+		keys = append(keys, strconv.Itoa(a.TagID))
+	}
+	if a.State >= 0 {
+		keys = append(keys, strconv.Itoa(a.State))
+	}
+	if a.PageNum > 0 {
+		keys = append(keys, strconv.Itoa(a.PageNum))
+	}
+	if a.PageSize > 0 {
+		keys = append(keys, strconv.Itoa(a.PageSize))
+	}
+
+	return strings.Join(keys, "_")
 }
