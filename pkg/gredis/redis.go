@@ -10,6 +10,7 @@ import (
 
 var RedisConn *redis.Pool
 
+// Setup 初始化Redis实例
 func Setup() error {
 	RedisConn = &redis.Pool{
 		// 最大空闲连接数
@@ -41,6 +42,7 @@ func Setup() error {
 	return nil
 }
 
+// Set 设置键值对
 func Set(key string, data interface{}, time int) error {
 	// 在连接池中获取一个活跃连接
 	conn := RedisConn.Get()
@@ -64,6 +66,7 @@ func Set(key string, data interface{}, time int) error {
 	return nil
 }
 
+// Exists 检查Key是否存在
 func Exists(key string) bool {
 	conn := RedisConn.Get()
 	defer conn.Close()
@@ -74,9 +77,9 @@ func Exists(key string) bool {
 	}
 
 	return exists
-
 }
 
+// Get 获取key对应的value
 func Get(key string) ([]byte, error) {
 	conn := RedisConn.Get()
 	defer conn.Close()
@@ -89,6 +92,7 @@ func Get(key string) ([]byte, error) {
 	return reply, nil
 }
 
+// Delete 删除key对应的value
 func Delete(key string) (bool, error) {
 	conn := RedisConn.Get()
 	defer conn.Close()
@@ -96,6 +100,7 @@ func Delete(key string) (bool, error) {
 	return redis.Bool(conn.Do("DEL", key))
 }
 
+// LikeDeletes 批量删除
 func LikeDeletes(key string) error {
 	conn := RedisConn.Get()
 	defer conn.Close()

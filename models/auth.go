@@ -1,16 +1,24 @@
 package models
 
+import "github.com/jinzhu/gorm"
+
 type Auth struct {
 	ID       int    `gorm:"primary_key" json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-func CheckAuth(username, password string) bool {
+// CheckAuth 检查用户是否存在
+func CheckAuth(username, password string) (bool, error) {
 	var auth Auth
-	db.Select("id").Where(Auth{Username: username, Password: password}).First(&auth)
-	if auth.ID > 0 {
-		return true
+	err := db.Select("id").Where(Auth{Username: username, Password: password}).First(&auth).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return false, err
 	}
-	return false
+
+	if auth.ID > 0 {
+		return true, nil
+	}
+
+	return false, nil
 }

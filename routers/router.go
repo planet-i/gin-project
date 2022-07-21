@@ -8,6 +8,7 @@ import (
 	v1 "github.com/planet-i/gin-project/api/v1"
 	_ "github.com/planet-i/gin-project/docs"
 	"github.com/planet-i/gin-project/middleware/jwt"
+	"github.com/planet-i/gin-project/pkg/export"
 	"github.com/planet-i/gin-project/pkg/qrcode"
 	"github.com/planet-i/gin-project/pkg/setting"
 	"github.com/planet-i/gin-project/pkg/upload"
@@ -23,13 +24,15 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
+	r.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+	r.StaticFS("/qrcode", http.Dir(qrcode.GetQrCodeFullPath()))
+
+	r.POST("/auth", api.GetAuth)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/upload", api.UploadImage)
-	r.GET("/auth", api.GetAuth)
 
 	apiv1 := r.Group("/api/v1")
-	r.StaticFS("/qrcode", http.Dir(qrcode.GetQrCodeFullPath()))
 	apiv1.Use(jwt.JWT())
 	{
 		// 获取标签列表
@@ -41,7 +44,9 @@ func InitRouter() *gin.Engine {
 		// 删除指定标签
 		apiv1.DELETE("/tags/:id", v1.DeleteTag)
 		// 标签导出到Excel文件
-		apiv1.POST("/tags/export", v1.ExportTag)
+		r.POST("/tags/export", v1.ExportTag)
+		//导入标签
+		r.POST("/tags/import", v1.ImportTag)
 
 		// 获取指定文章
 		apiv1.GET("/articles/:id", v1.AddrArticle)
@@ -53,7 +58,7 @@ func InitRouter() *gin.Engine {
 		apiv1.PUT("/articles/:id", v1.EditArticle)
 		// 删除指定文章
 		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
-		// 生成二维码
+		// 生成文章海报
 		apiv1.POST("/articles/poster/generate", v1.GenerateArticlePoster)
 	}
 
